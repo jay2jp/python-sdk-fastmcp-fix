@@ -22,6 +22,7 @@ class Tool(BaseModel):
     name: str = Field(description="Name of the tool")
     description: str = Field(description="Description of what the tool does")
     parameters: dict[str, Any] = Field(description="JSON schema for tool parameters")
+    input_schema: str = Field(description="JSON schema for tool input")
     fn_metadata: FuncMetadata = Field(
         description="Metadata about the function including a pydantic model for tool"
         " arguments"
@@ -38,6 +39,7 @@ class Tool(BaseModel):
         name: str | None = None,
         description: str | None = None,
         context_kwarg: str | None = None,
+        input_schema: str | None = None,
     ) -> "Tool":
         """Create a Tool from a function."""
         func_name = name or fn.__name__
@@ -61,12 +63,14 @@ class Tool(BaseModel):
             skip_names=[context_kwarg] if context_kwarg is not None else [],
         )
         parameters = func_arg_metadata.arg_model.model_json_schema()
-
+        if input_schema is None:
+            input_schema = ""
         return cls(
             fn=fn,
             name=func_name,
             description=func_doc,
             parameters=parameters,
+            input_schema=input_schema,
             fn_metadata=func_arg_metadata,
             is_async=is_async,
             context_kwarg=context_kwarg,

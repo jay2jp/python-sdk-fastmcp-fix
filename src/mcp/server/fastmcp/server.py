@@ -243,6 +243,7 @@ class FastMCP:
         fn: AnyFunction,
         name: str | None = None,
         description: str | None = None,
+        input_schema: str | None = None,
     ) -> None:
         """Add a tool to the server.
 
@@ -253,11 +254,17 @@ class FastMCP:
             fn: The function to register as a tool
             name: Optional name for the tool (defaults to function name)
             description: Optional description of what the tool does
+            input_schema: Optional JSON schema for the tool input
         """
-        self._tool_manager.add_tool(fn, name=name, description=description)
+        self._tool_manager.add_tool(
+            fn, name=name, description=description, input_schema=input_schema
+        )
 
     def tool(
-        self, name: str | None = None, description: str | None = None
+        self,
+        name: str | None = None,
+        description: str | None = None,
+        input_schema: str | None = None,
     ) -> Callable[[AnyFunction], AnyFunction]:
         """Decorator to register a tool.
 
@@ -292,7 +299,9 @@ class FastMCP:
             )
 
         def decorator(fn: AnyFunction) -> AnyFunction:
-            self.add_tool(fn, name=name, description=description)
+            self.add_tool(
+                fn, name=name, description=description, input_schema=input_schema
+            )
             return fn
 
         return decorator

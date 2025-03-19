@@ -35,9 +35,12 @@ class ToolManager:
         fn: Callable,
         name: str | None = None,
         description: str | None = None,
+        input_schema: str | None = None,
     ) -> Tool:
         """Add a tool to the server."""
-        tool = Tool.from_function(fn, name=name, description=description)
+        tool = Tool.from_function(
+            fn, name=name, description=description, input_schema=input_schema
+        )
         existing = self._tools.get(tool.name)
         if existing:
             if self.warn_on_duplicate_tools:
