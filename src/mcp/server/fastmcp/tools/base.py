@@ -64,13 +64,16 @@ class Tool(BaseModel):
         )
         parameters = func_arg_metadata.arg_model.model_json_schema()
         if input_schema is None:
-            input_schema = ""
+            input_schematic = ""
+        else:
+            input_schematic = input_schema
+
         return cls(
             fn=fn,
             name=func_name,
             description=func_doc,
             parameters=parameters,
-            input_schema=input_schema,
+            input_schema=input_schematic,
             fn_metadata=func_arg_metadata,
             is_async=is_async,
             context_kwarg=context_kwarg,
